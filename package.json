@@ -1,0 +1,11 @@
+{
+  "name": "carcare",
+  "version": "1.0.0",
+  "description": "Aplicación web de agendamiento de mantenimientos vehiculares (historias HU-01 a HU-09)",
+  "main": "core.js",
+  "scripts": {
+    "test": "node --test tests/core.test.js"
+  },
+  "license": "UNLICENSED",
+  "private": true
+}

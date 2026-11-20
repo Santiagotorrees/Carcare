@@ -1,0 +1,170 @@
+:root {
+  --bg: #f5f6f8;
+  --surface: #ffffff;
+  --fg: #1d2330;
+  --muted: #5d6675;
+  --line: #d9dde5;
+  --accent: #2456c9;
+  --accent-fg: #ffffff;
+  --error-bg: #fdecec;
+  --error-fg: #9b1c1c;
+  --ok-bg: #e9f7ee;
+  --ok-fg: #1d6b3a;
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #12151b;
+    --surface: #1c212b;
+    --fg: #e8ebf1;
+    --muted: #9aa3b2;
+    --line: #333a48;
+    --accent: #6d94ff;
+    --accent-fg: #0b1020;
+    --error-bg: #3a1d1d;
+    --error-fg: #ffb4b4;
+    --ok-bg: #18302a;
+    --ok-fg: #9ee6b8;
+    color-scheme: dark;
+  }
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+a { color: var(--accent); }
+
+.topbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px max(16px, env(safe-area-inset-left, 0px));
+  background: var(--surface);
+  border-bottom: 1px solid var(--line);
+}
+
+.brand { font-weight: 700; font-size: 18px; color: var(--fg); text-decoration: none; }
+
+nav { display: flex; flex-wrap: wrap; gap: 14px; align-items: center; }
+nav a { text-decoration: none; font-size: 14px; }
+nav a.active { font-weight: 600; text-decoration: underline; }
+
+.container {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 24px max(16px, env(safe-area-inset-right, 0px)) 48px max(16px, env(safe-area-inset-left, 0px));
+}
+
+h1 { font-size: 24px; margin: 0 0 16px; }
+h2 { font-size: 18px; margin: 24px 0 12px; }
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 20px;
+  margin-bottom: 16px;
+  min-width: 0;
+}
+
+.grid { display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }
+
+form .row { display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); }
+
+label { display: block; font-size: 13px; font-weight: 600; color: var(--muted); margin-bottom: 4px; }
+
+input, select {
+  width: 100%;
+  font: inherit;
+  color: var(--fg);
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 10px 12px;
+  min-height: 44px;
+}
+
+input:focus, select:focus, button:focus-visible, a:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+input[aria-invalid="true"] { border-color: var(--error-fg); }
+
+.field { margin-bottom: 14px; min-width: 0; }
+
+.field-error { display: block; color: var(--error-fg); font-size: 13px; min-height: 0; margin-top: 4px; }
+.field-error:empty { display: none; }
+
+button, .btn {
+  font: inherit;
+  font-weight: 600;
+  min-height: 44px;
+  padding: 10px 18px;
+  border-radius: 8px;
+  border: 1px solid var(--accent);
+  background: var(--accent);
+  color: var(--accent-fg);
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+button.secondary, .btn.secondary {
+  background: transparent;
+  color: var(--accent);
+}
+
+button.small, .btn.small { min-height: 36px; padding: 6px 12px; font-size: 14px; }
+
+.actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 8px; }
+
+.notice {
+  padding: 12px 14px;
+  border-radius: 8px;
+  margin-bottom: 16px;
+  border: 1px solid transparent;
+}
+.notice.error { background: var(--error-bg); color: var(--error-fg); }
+.notice.ok { background: var(--ok-bg); color: var(--ok-fg); }
+.notice.info { background: var(--surface); border-color: var(--line); }
+
+.table-wrap { overflow-x: auto; min-width: 0; }
+table { width: 100%; border-collapse: collapse; font-size: 14px; }
+th, td { text-align: left; padding: 10px 8px; border-bottom: 1px solid var(--line); vertical-align: middle; }
+th { color: var(--muted); font-weight: 600; font-size: 13px; }
+
+.badge {
+  display: inline-block;
+  padding: 2px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  border: 1px solid var(--line);
+  color: var(--muted);
+}
+.badge.ok { color: var(--ok-fg); border-color: var(--ok-fg); }
+.badge.warn { color: var(--error-fg); border-color: var(--error-fg); }
+
+.empty { color: var(--muted); padding: 16px 0; }
+
+.muted { color: var(--muted); font-size: 13px; }
+
+.login-wrap { max-width: 420px; margin: 24px auto; }
+
+@media (max-width: 480px) {
+  h1 { font-size: 20px; }
+  .actions button, .actions .btn { width: 100%; }
+}
