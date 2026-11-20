@@ -170,6 +170,30 @@ test("HU-09 CA-02: el cliente no puede gestionar solicitudes", async () => {
   assert.equal(sol.estado, "pendiente");
 });
 
+test("HU-09: el administrador bloquea y desbloquea clientes; el cliente bloqueado no entra", async () => {
+  const state = await seedState();
+  const bloq = Core.cambiarBloqueo(state, "u_admin", "u_cliente", true);
+  assert.equal(bloq.ok, true);
+  const login = await Core.login(state, "cliente@carcare.co", "cliente12345");
+  assert.equal(login.ok, false);
+  assert.match(login.error, /bloqueada/);
+  const repetido = Core.cambiarBloqueo(state, "u_admin", "u_cliente", true);
+  assert.equal(repetido.ok, false);
+  const desbloq = Core.cambiarBloqueo(state, "u_admin", "u_cliente", false);
+  assert.equal(desbloq.ok, true);
+  const ok = await Core.login(state, "cliente@carcare.co", "cliente12345");
+  assert.equal(ok.ok, true);
+  assert.equal(state.auditoria.length, 2);
+});
+
+test("HU-09: solo el administrador bloquea, y no se bloquean administradores", async () => {
+  const state = await seedState();
+  const noAdmin = Core.cambiarBloqueo(state, "u_cliente", "u_bloq", false);
+  assert.equal(noAdmin.code, "NO_AUTORIZADO");
+  const admin = Core.cambiarBloqueo(state, "u_admin", "u_admin", true);
+  assert.equal(admin.ok, false);
+});
+
 test("HU-09: la ayuda no revela si el correo existe", () => {
   const state = { users: [], solicitudes: [] };
   const res = Core.solicitarAyuda(state, "nadie@x.co", "contrasena");

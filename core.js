@@ -203,6 +203,29 @@
     };
   }
 
+  // HU-09: el administrador bloquea o desbloquea una cuenta de cliente
+  function cambiarBloqueo(state, actorId, userId, bloquear, now = new Date()) {
+    const actor = state.users.find((u) => u.id === actorId);
+    if (!actor || actor.rol !== "admin") {
+      return { ok: false, code: "NO_AUTORIZADO", error: "Acción no autorizada: solo el administrador puede bloquear cuentas." };
+    }
+    const user = state.users.find((u) => u.id === userId);
+    if (!user) return { ok: false, error: "La cuenta no existe." };
+    if (user.rol !== "cliente") return { ok: false, error: "Solo se pueden bloquear cuentas de cliente." };
+    if (!!user.bloqueado === !!bloquear) {
+      return { ok: false, error: bloquear ? "La cuenta ya está bloqueada." : "La cuenta ya está activa." };
+    }
+    user.bloqueado = !!bloquear;
+    state.auditoria.push({
+      id: newId("aud"),
+      actorId,
+      accion: bloquear ? "bloquear" : "desbloquear",
+      userId,
+      fecha: nowStr(now)
+    });
+    return { ok: true, mensaje: bloquear ? "Cuenta bloqueada." : "Cuenta desbloqueada." };
+  }
+
   // ---------- Vehículos (HU-03) ----------
   function registrarVehiculo(state, userId, d, year = new Date().getFullYear()) {
     const errors = validateVehiculo(d, year);
@@ -307,7 +330,7 @@
     hashPassword, verifyPassword,
     validatePassword, validateRegistro, validateLogin, validateVehiculo, validateAgenda, overlaps,
     login, registrar, cambiarContrasena, solicitarAyuda, resolverSolicitud,
-    registrarVehiculo, crearAgenda, reservar, sendDueReminders,
+    registrarVehiculo, crearAgenda, reservar, sendDueReminders, cambiarBloqueo,
     publicUser
   };
 

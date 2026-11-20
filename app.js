@@ -508,6 +508,18 @@
             <thead><tr><th>Fecha</th><th>Cliente</th><th>Motivo</th><th>Estado</th><th>Acción</th></tr></thead>
             <tbody>${filas}</tbody></table></div>`
         : `<p class="empty">No hay solicitudes de acceso.</p>`}
+    </section>
+    <section class="card">
+      <h2 style="margin-top:0">Cuentas de clientes</h2>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Nombre</th><th>Correo</th><th>Estado</th><th>Acción</th></tr></thead>
+        <tbody>${state.users.filter((u) => u.rol === "cliente").map((u) => `
+          <tr><td>${esc(u.nombre)}</td><td>${esc(u.email)}</td>
+          <td>${u.bloqueado ? '<span class="badge warn">Bloqueada</span>' : '<span class="badge ok">Activa</span>'}</td>
+          <td>${u.bloqueado
+            ? `<button class="small secondary" data-action="bloqueo" data-id="${esc(u.id)}" data-bloquear="false">Desbloquear</button>`
+            : `<button class="small secondary" data-action="bloqueo" data-id="${esc(u.id)}" data-bloquear="true">Bloquear</button>`}</td></tr>`).join("")}
+        </tbody></table></div>
     </section>`;
   }
 
@@ -566,6 +578,16 @@
         msg: `Recordatorios enviados: ${r.enviados}. Con error: ${r.fallidos}.`,
         kind: r.fallidos ? "error" : "ok"
       };
+      return render();
+    }
+    if (accion === "bloqueo") {
+      const r = C.cambiarBloqueo(state, session.id, el.dataset.id, el.dataset.bloquear === "true");
+      if (r.ok) {
+        saveState();
+        flash = { msg: r.mensaje, kind: "ok" };
+      } else {
+        flash = { msg: r.error, kind: "error" };
+      }
       return render();
     }
     if (accion === "resolver") {
